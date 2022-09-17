@@ -2,16 +2,11 @@ from django.db import models
 
 # Create your models here.
 
-class Dog:
-    def __init__(self, name, breed, description, weight):
-        self.name = name
-        self.breed = breed
-        self.description = description
-        weight = weight
+class Dog(models.Model):
+    name = models.CharField(max_length=100)
+    breed = models.CharField(max_length=100)
+    description = models.TextField(max_length=200)
+    weight = models.IntegerField()
 
-dogs = [
-    Dog('Greg','Sheppard','Older dog',80),
-    Dog('Jimbo','Doberman','Smart and trained doggie',75),
-    Dog('Bailey','Poodle','Silly Dog',60)
-]
-
+    def __str__(self):
+        return self.name
