@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Dog
 from django.views.generic.edit import CreateView, UpdateView,DeleteView
+from .forms import TrainerForm
 
 # Create your views here.
 
@@ -17,7 +18,8 @@ def dogs_index(request):
 
 def dogs_detail(request, dog_id):
     dog = Dog.objects.get(id=dog_id)
-    return render(request, 'dogs/detail.html', {'dog':dog})
+    trainer_form = TrainerForm()
+    return render(request, 'dogs/detail.html', {'dog':dog, 'trainer_form': trainer_form})
 
 class DogCreate(CreateView):
     model = Dog
@@ -30,3 +32,11 @@ class DogUpdate(UpdateView):
 class DogDelete(DeleteView):
     model = Dog
     success_url = '/dogs/'
+
+def add_trainer(request, dog_id):
+    form = TrainerForm(request.POST)
+    if form.is_valid():
+        new_trainer = form.save(commit=False)
+        new_trainer.dog_id = dog_id
+        new_trainer.save()
+    return redirect('detail', dog_id=dog_id)

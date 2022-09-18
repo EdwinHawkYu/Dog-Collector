@@ -19,5 +19,33 @@
       <a href="{% url 'dogs_delete' dog.id %}">Delete</a>
     </div>
 </div>
+<div class="col s6">
+  <form method="post" action="{% url 'add_trainer' dog.id %}">
+    {% csrf_token%}
+    {{ trainer_form.as_p}}
+    <input type="submit" class="btn" value="Add Trainer!">
+  </form>
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Trainer</th>
+        <th>Experience</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%  for trainer in dog.trainer_set.all %}
+      <tr>
+        <td>{{trainer.name}}</td>
+        <td>{{trainer.get_experience_display}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  var selectEl = document.getElementById('id_experience');
+  M.FormSelect.init(selectEl);
+</script>
 
 {% endblock %}
