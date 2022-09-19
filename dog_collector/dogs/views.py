@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Dog
+from .models import Dog, Collar
 from django.views.generic.edit import CreateView, UpdateView,DeleteView
 from .forms import TrainerForm
 
@@ -18,8 +18,9 @@ def dogs_index(request):
 
 def dogs_detail(request, dog_id):
     dog = Dog.objects.get(id=dog_id)
+    collars_not_owned = Collar.objects.exclude(id__in = dog.collars.all().values_list('id'))
     trainer_form = TrainerForm()
-    return render(request, 'dogs/detail.html', {'dog':dog, 'trainer_form': trainer_form})
+    return render(request, 'dogs/detail.html', {'dog':dog, 'trainer_form': trainer_form, 'collars':collars_not_owned})
 
 class DogCreate(CreateView):
     model = Dog
@@ -40,3 +41,12 @@ def add_trainer(request, dog_id):
         new_trainer.dog_id = dog_id
         new_trainer.save()
     return redirect('detail', dog_id=dog_id)
+
+def assoc_collar(request, dog_id, collar_id):
+    Dog.objects.get(id=dog_id).collars.add(collar_id)
+    return redirect('detail', dog_id=dog_id)
+
+def unassoc_collar(request, dog_id, collar_id):
+    Dog.objects.get(id= dog_id).collars.remove(collar_id)
+    return redirect('detail', dog_id=dog_id)
+

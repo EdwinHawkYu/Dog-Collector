@@ -10,11 +10,16 @@ EXPERIENCE = (
     ('E', 'Expert')
 )
 
+class Collar(models.Model):
+    color = models.CharField(max_length=100)
+    size = models.CharField(max_length=50)
+
 class Dog(models.Model):
     name = models.CharField(max_length=100)
     breed = models.CharField(max_length=100)
     description = models.TextField(max_length=200)
     weight = models.IntegerField()
+    collars = models.ManyToManyField(Collar)
 
     def __str__(self):
         return self.name
